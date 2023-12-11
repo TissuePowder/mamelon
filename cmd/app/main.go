@@ -25,7 +25,8 @@ func main() {
 	data, err := os.ReadFile("config.json")
 	if err != nil {
 		trace := string(debug.Stack())
-		logger.Error(err.Error(), "trace", trace)
+		logger.Error(err.Error())
+		fmt.Println(trace)
 		os.Exit(1)
 	}
 
@@ -43,11 +44,21 @@ func main() {
 		logger: logger,
 	}
 
+	err = app.getLinks("tweets.txt")
+
+	if err != nil {
+		trace := string(debug.Stack())
+		logger.Error(err.Error())
+		fmt.Println(trace)
+		os.Exit(1)
+	}
+	
 	err = app.runBot()
 
 	if err != nil {
 		trace := string(debug.Stack())
-		logger.Error(err.Error(), "trace", trace)
+		logger.Error(err.Error())
+		fmt.Println(trace)
 		os.Exit(1)
 	}
 }

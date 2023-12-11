@@ -29,3 +29,21 @@ func (app *application) addLink(link string) error {
 	err = writer.Flush()
 	return err
 }
+
+func (app *application) getLinks(fileName string) error {
+
+	file, err := os.Open(fileName)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		LinkSet[line] = struct{}{}
+	}
+
+	err = scanner.Err()
+	return err
+}
