@@ -10,12 +10,15 @@ import (
 	"mamelon/internal/models"
 )
 
+var LinkSet map[string]struct{}
 type application struct {
 	config models.Config
 	logger *slog.Logger
 }
 
 func main() {
+
+	LinkSet = make(map[string]struct{})
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/gocolly/colly/v2"
@@ -37,12 +38,15 @@ func (app *application) getTweets() []string {
 
 	c.OnHTML(".timeline-item", func(e *colly.HTMLElement) {
 		link := e.ChildAttr("a.tweet-link", "href")
-		text := e.ChildText(".tweet-content")
-		tweets = append(tweets, Tweet{
-			Link: link,
-			Text: text,
-		})
-		twlinks = append(twlinks, link)
+		link = strings.TrimSuffix(link, "#m")
+		if !app.existsLink(link) {
+			text := e.ChildText(".tweet-content")
+			tweets = append(tweets, Tweet{
+				Link: link,
+				Text: text,
+			})
+			twlinks = append(twlinks, link)
+		}
 	})
 
 	for _, user := range app.config.Scrape.Usernames {

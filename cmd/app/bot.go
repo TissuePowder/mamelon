@@ -20,6 +20,7 @@ func (app *application) runBot() error {
 	discord.AddHandler(app.messageHandler)
 
 	ticker := time.NewTicker(15 * time.Second)
+
 	quit := make(chan struct{})
 	go func() {
 		for {
@@ -28,9 +29,12 @@ func (app *application) runBot() error {
 				tweets := app.getTweets()
 				for _, c := range app.config.Bot.Channels {
 					for _, tweet := range tweets {
-						tweet := strings.TrimSuffix(tweet, "#m")
 						redirectLink := fmt.Sprintf("https://%s%s", app.config.Scrape.Redirect, tweet)
 						discord.ChannelMessageSend(c, redirectLink)
+						err := app.addLink(tweet)
+						if err != nil {
+							app.logger.Error(err.Error())
+						}
 						time.Sleep(1 * time.Second)
 					}
 				}
