@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -54,5 +55,6 @@ func (app *application) getTweets() []string {
 		c.Visit(url)
 	}
 
+	slices.Reverse(twlinks)
 	return twlinks
 }
