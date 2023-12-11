@@ -1,0 +1,20 @@
+{
+  "bot": {
+    "token": "",
+    "channels": [],
+    "trigger": "m!",
+    "interval": "1m",
+    "mentions": []
+  },
+  "scrape": {
+    "instances": [],
+    "interval": "1m",
+    "usernames": []
+  },
+  "translate": {
+    "deepl": {
+      "url": "",
+      "key": ""
+    }
+  }
+}
