@@ -41,6 +41,7 @@ func (app *application) getTweets() []string {
 		link := e.ChildAttr("a.tweet-link", "href")
 		link = strings.TrimSuffix(link, "#m")
 		if !app.existsLink(link) {
+			LinkSet[link] = struct{}{}
 			text := e.ChildText(".tweet-content")
 			tweets = append(tweets, Tweet{
 				Link: link,
