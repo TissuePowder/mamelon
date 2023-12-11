@@ -1,33 +1,46 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log/slog"
 	"os"
 	"runtime/debug"
+
+	"mamelon/internal/models"
 )
 
-type config struct {
-	ChannelID string
-}
-
 type application struct {
-	config config
+	config models.Config
 	logger *slog.Logger
 }
 
 func main() {
-	cfg := &config{
-		ChannelID: "746435944147714080",
-	}
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 
+	data, err := os.ReadFile("config.json")
+	if err != nil {
+		trace := string(debug.Stack())
+		logger.Error(err.Error(), "trace", trace)
+		os.Exit(1)
+	}
+
+	var cfg models.Config
+	err = json.Unmarshal(data, &cfg)
+	if err != nil {
+		trace := string(debug.Stack())
+		logger.Error(err.Error())
+		fmt.Println(trace)
+		os.Exit(1)
+	}
+
 	app := &application{
-		config: *cfg,
+		config: cfg,
 		logger: logger,
 	}
 
-	err := app.runBot()
+	err = app.runBot()
 
 	if err != nil {
 		trace := string(debug.Stack())

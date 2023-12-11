@@ -1,21 +1,19 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
 
 func (app *application) runBot() error {
-	BotToken := ""
-	discord, err := discordgo.New("Bot " + BotToken)
+	discord, err := discordgo.New("Bot " + app.config.Bot.Token)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	discord.AddHandler(app.messageHandler)
@@ -26,7 +24,9 @@ func (app *application) runBot() error {
 		for {
 			select {
 			case <-ticker.C:
-				discord.ChannelMessageSend(app.config.ChannelID, "15s interval")
+				for _, c := range app.config.Bot.Channels {
+					discord.ChannelMessageSend(c, "15s interval")
+				}
 			case <-quit:
 				ticker.Stop()
 				return
@@ -36,11 +36,12 @@ func (app *application) runBot() error {
 
 	discord.Open()
 	defer discord.Close()
+	app.logger.Info("Bot started!")
 
-	fmt.Println("Bot running...")
 	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	<-c
+	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
+	s := <-c
+	app.logger.Info(s.String())
 	return nil
 }
 
