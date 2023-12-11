@@ -19,7 +19,7 @@ func (app *application) runBot() error {
 
 	discord.AddHandler(app.messageHandler)
 
-	ticker := time.NewTicker(15 * time.Second)
+	ticker := time.NewTicker(60 * time.Second)
 
 	quit := make(chan struct{})
 	go func() {

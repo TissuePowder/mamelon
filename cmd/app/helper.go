@@ -14,7 +14,7 @@ func (app *application) addLink(link string) error {
 
 	LinkSet[link] = struct{}{}
 
-	file, err := os.OpenFile("tweets.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile("tweets.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0664)
 	if err != nil {
 		return err
 	}
