@@ -9,7 +9,8 @@
   "scrape": {
     "instances": [],
     "interval": "1m",
-    "usernames": []
+    "usernames": [],
+    "redirect": ""
   },
   "translate": {
     "deepl": {

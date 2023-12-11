@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
 	"strings"
@@ -24,8 +25,14 @@ func (app *application) runBot() error {
 		for {
 			select {
 			case <-ticker.C:
+				tweets := app.getTweets()
 				for _, c := range app.config.Bot.Channels {
-					discord.ChannelMessageSend(c, "15s interval")
+					for _, tweet := range tweets {
+						tweet := strings.TrimSuffix(tweet, "#m")
+						redirectLink := fmt.Sprintf("https://%s%s", app.config.Scrape.Redirect, tweet)
+						discord.ChannelMessageSend(c, redirectLink)
+						time.Sleep(1 * time.Second)
+					}
 				}
 			case <-quit:
 				ticker.Stop()
@@ -53,6 +60,6 @@ func (app *application) messageHandler(discord *discordgo.Session, message *disc
 
 	switch {
 	case strings.HasPrefix(message.Content, "m!help"):
-		discord.ChannelMessageSend(message.ChannelID, "TODO help")
+		discord.ChannelMessageSend(message.ChannelID, "TODO: Commands will be implemented in future")
 	}
 }

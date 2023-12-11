@@ -12,13 +12,20 @@ type Tweet struct {
 	Text string
 }
 
-func (app *application) scrape() {
+func (app *application) getTweets() []string {
 	c := colly.NewCollector()
 	c.SetRequestTimeout(120 * time.Second)
+
+	headers := map[string]string{
+		"accept":          "*/*",
+		"accept-language": "en-US,en;q=0.9",
+		"user-agent":      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+	}
+
 	c.OnRequest(func(r *colly.Request) {
-		r.Headers.Set("accept", "*/*")
-		r.Headers.Set("accept-language", "en-US,en;q=0.9")
-		r.Headers.Set("user-agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+		for key, value := range headers {
+			r.Headers.Set(key, value)
+		}
 	})
 
 	c.OnError(func(r *colly.Response, e error) {
@@ -26,6 +33,7 @@ func (app *application) scrape() {
 	})
 
 	tweets := []Tweet{}
+	twlinks := []string{}
 
 	c.OnHTML(".timeline-item", func(e *colly.HTMLElement) {
 		link := e.ChildAttr("a.tweet-link", "href")
@@ -34,10 +42,13 @@ func (app *application) scrape() {
 			Link: link,
 			Text: text,
 		})
-		fmt.Println(link)
-		
+		twlinks = append(twlinks, link)
 	})
 
-	c.Visit("https://example.com")
+	for _, user := range app.config.Scrape.Usernames {
+		url := fmt.Sprintf("https://%s/%s", app.config.Scrape.Instances[0], user)
+		c.Visit(url)
+	}
 
+	return twlinks
 }

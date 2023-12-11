@@ -12,6 +12,7 @@ type Scrape struct {
 	Instances []string `json:"instances"`
 	Interval  string   `json:"interval"`
 	Usernames []string `json:"usernames"`
+	Redirect  string   `json:"redirect"`
 }
 
 type DeepL struct {
