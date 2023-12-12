@@ -63,8 +63,10 @@ func (app *application) messageHandler(discord *discordgo.Session, message *disc
 		return
 	}
 
-	switch {
-	case strings.HasPrefix(message.Content, "m!help"):
-		discord.ChannelMessageSend(message.ChannelID, "TODO: Commands will be implemented in future")
+	trigger := fmt.Sprintf("<@%s>", discord.State.User.ID)
+
+	if strings.HasPrefix(message.Content, trigger) {
+		discord.ChannelMessageSend(message.ChannelID, "Meow!")
 	}
+
 }
