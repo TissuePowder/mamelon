@@ -14,7 +14,7 @@ type Tweet struct {
 	Text string
 }
 
-func (app *application) getTweets() []string {
+func (app *application) getTweets() []Tweet {
 	c := colly.NewCollector()
 	c.SetRequestTimeout(120 * time.Second)
 
@@ -35,7 +35,6 @@ func (app *application) getTweets() []string {
 	})
 
 	tweets := []Tweet{}
-	twlinks := []string{}
 
 	c.OnHTML(".timeline-item", func(e *colly.HTMLElement) {
 		link := e.ChildAttr("a.tweet-link", "href")
@@ -43,11 +42,20 @@ func (app *application) getTweets() []string {
 		if !app.existsLink(link) {
 			LinkSet[link] = struct{}{}
 			text := e.ChildText(".tweet-content")
+			text = strings.ReplaceAll(text, "nitter.net", "twitter.com")
+			text = strings.ReplaceAll(text, "piped.video", "youtu.be")
+			text = strings.ReplaceAll(text, "teddit.net", "reddit.com")
+			translated, err := app.translate(text)
+			if err != nil {
+				app.logger.Error(err.Error())
+				translated = "`Some error occured during DeepL translation`"
+			} else {
+				translated = fmt.Sprintf("```\nTranslation (DeepL):\n------------------------\n%s\n```", translated)
+			}
 			tweets = append(tweets, Tweet{
 				Link: link,
-				Text: text,
+				Text: translated,
 			})
-			twlinks = append(twlinks, link)
 		}
 	})
 
@@ -56,6 +64,6 @@ func (app *application) getTweets() []string {
 		c.Visit(url)
 	}
 
-	slices.Reverse(twlinks)
-	return twlinks
+	slices.Reverse(tweets)
+	return tweets
 }

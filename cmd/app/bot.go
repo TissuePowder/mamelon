@@ -29,9 +29,10 @@ func (app *application) runBot() error {
 				tweets := app.getTweets()
 				for _, c := range app.config.Bot.Channels {
 					for _, tweet := range tweets {
-						redirectLink := fmt.Sprintf("https://%s%s", app.config.Scrape.Redirect, tweet)
+						redirectLink := fmt.Sprintf("https://%s%s", app.config.Scrape.Redirect, tweet.Link)
 						discord.ChannelMessageSend(c, redirectLink)
-						err := app.addLink(tweet)
+						discord.ChannelMessageSend(c, tweet.Text)
+						err := app.addLink(tweet.Link)
 						if err != nil {
 							app.logger.Error(err.Error())
 						}
