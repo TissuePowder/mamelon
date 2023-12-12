@@ -26,8 +26,10 @@ func (app *application) runBot() error {
 		for {
 			select {
 			case <-ticker.C:
+
 				tweets := app.getTweets()
 				for _, c := range app.config.Bot.Channels {
+
 					for _, tweet := range tweets {
 						redirectLink := fmt.Sprintf("https://%s%s", app.config.Scrape.Redirect, tweet.Link)
 						discord.ChannelMessageSend(c, redirectLink)
@@ -38,7 +40,20 @@ func (app *application) runBot() error {
 						}
 						time.Sleep(1 * time.Second)
 					}
+
+					bMsg, err := os.ReadFile("system.txt")
+					if err != nil {
+						app.logger.Error(err.Error())
+					}
+					msg := string(bMsg)
+					discord.ChannelMessageSend(c, msg)
 				}
+
+				err = os.Truncate("system.txt", 0)
+				if err != nil {
+					app.logger.Error(err.Error())
+				}
+
 			case <-quit:
 				ticker.Stop()
 				return
