@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"slices"
 )
 
 type ChatRequest struct {
@@ -23,10 +24,25 @@ type ChatResponse struct {
 	} `json:"choices"`
 }
 
-func (app *application) getGptResponse(prompt string) (string, error) {
+func (app *application) getGptResponse(authorID string, prompt string) (string, error) {
+
+	isPrivilegedUser := false
+	if slices.Contains(app.config.Bot.PrivilegedUsers, authorID) {
+		isPrivilegedUser = true
+	}
+
+	if isPrivilegedUser && prompt == "sleep" {
+		app.config.Chat.Public = false
+		return "*Mamelon falls asleep*", nil
+	}
+
+	if isPrivilegedUser && prompt == "wake up" {
+		app.config.Chat.Public = true
+		return "Meow!", nil
+	}
 
 	if !app.config.Chat.Public {
-		return "*Mamelon is currently sleeping and can't talk now. But your message will be passed on to the bot maintainers. No worries.*", nil
+		return "*Mamelon is sleeping and can't talk right now. Your message will be passed on to the bot maintainers.*", nil
 	}
 
 	model := app.config.Chat.OpenAI.Model

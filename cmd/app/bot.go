@@ -83,16 +83,12 @@ func (app *application) messageHandler(discord *discordgo.Session, message *disc
 	if strings.HasPrefix(message.Content, trigger) {
 		prompt := strings.TrimPrefix(message.Content, trigger)
 		prompt = strings.TrimSpace(prompt)
-		if prompt != "" {
-			reply, err := app.getGptResponse(prompt)
-			if err != nil {
-				app.logger.Error(err.Error())
-				return
-			}
-			discord.ChannelMessageSend(message.ChannelID, reply)
-		} else {
-			discord.ChannelMessageSend(message.ChannelID, "Meow!")
+		reply, err := app.getGptResponse(message.Author.ID, prompt)
+		if err != nil {
+			app.logger.Error(err.Error())
+			return
 		}
+		discord.ChannelMessageSend(message.ChannelID, reply)
 	}
 
 }

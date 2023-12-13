@@ -4,7 +4,8 @@
     "channels": [],
     "trigger": "m!",
     "interval": "1m",
-    "mentions": []
+    "mentions": [],
+    "privileged_users": []
   },
   "scrape": {
     "instances": [],
