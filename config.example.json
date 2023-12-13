@@ -17,5 +17,14 @@
       "url": "",
       "key": ""
     }
+  },
+  "chat": {
+    "public": false,
+    "openai": {
+      "model": "",
+      "url": "",
+      "key": "",
+      "system": ""
+    }
   }
 }

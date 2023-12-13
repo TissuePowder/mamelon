@@ -24,8 +24,21 @@ type Translate struct {
 	DeepL DeepL `json:"deepl"`
 }
 
+type OpenAI struct {
+	Model  string `json:"model"`
+	Url    string `json:"url"`
+	Key    string `json:"key"`
+	System string `json:"system"`
+}
+
+type Chat struct {
+	Public bool   `json:"public"`
+	OpenAI OpenAI `json:"openai"`
+}
+
 type Config struct {
 	Bot       Bot
 	Scrape    Scrape
 	Translate Translate
+	Chat      Chat
 }
