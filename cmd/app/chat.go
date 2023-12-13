@@ -26,7 +26,7 @@ type ChatResponse struct {
 func (app *application) getGptResponse(prompt string) (string, error) {
 
 	if !app.config.Chat.Public {
-		return "*Mamelon is currently sleeping and can't talk now*", nil
+		return "*Mamelon is currently sleeping and can't talk now. But your message will be passed on to the bot maintainers. No worries.*", nil
 	}
 
 	model := app.config.Chat.OpenAI.Model
