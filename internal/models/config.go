@@ -1,11 +1,12 @@
 package models
 
 type Bot struct {
-	Token    string   `json:"token"`
-	Channels []string `json:"channels"`
-	Trigger  string   `json:"trigger"`
-	Interval string   `json:"interval"`
-	Mentions []string `json:"mentions"`
+	Token           string   `json:"token"`
+	Channels        []string `json:"channels"`
+	Trigger         string   `json:"trigger"`
+	Interval        string   `json:"interval"`
+	Mentions        []string `json:"mentions"`
+	PrivilegedUsers []string `json:"privileged_users"`
 }
 
 type Scrape struct {
