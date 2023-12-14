@@ -83,6 +83,7 @@ func (app *application) messageHandler(discord *discordgo.Session, message *disc
 	if strings.HasPrefix(message.Content, trigger) {
 		prompt := strings.TrimPrefix(message.Content, trigger)
 		prompt = strings.TrimSpace(prompt)
+		app.logger.Info(fmt.Sprintf("%s|%s: %s", message.Author.Username, message.Author.ID, prompt))
 		reply, err := app.getGptResponse(message.Author.ID, prompt)
 		if err != nil {
 			app.logger.Error(err.Error())
