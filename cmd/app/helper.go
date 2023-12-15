@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"os"
+	"regexp"
 )
 
 func (app *application) existsLink(link string) bool {
@@ -46,4 +47,13 @@ func (app *application) getLinks(fileName string) error {
 
 	err = scanner.Err()
 	return err
+}
+
+func (app *application) getTweetLinksFromMessage(text string) []string {
+
+	pattern := `https://(?:\S*twitter\.com|\S*x\.com)/\S+/status/\S+`
+	re := regexp.MustCompile(pattern)
+	matches := re.FindAllString(text, -1)
+	// fmt.Println(text)
+	return matches
 }

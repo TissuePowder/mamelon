@@ -92,4 +92,7 @@ func (app *application) messageHandler(discord *discordgo.Session, message *disc
 		discord.ChannelMessageSend(message.ChannelID, reply)
 	}
 
+	tweetLinks := app.getTweetLinksFromMessage(message.Content)
+	fmt.Println(tweetLinks)
+	
 }
