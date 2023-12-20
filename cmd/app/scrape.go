@@ -40,7 +40,11 @@ func (app *application) getTweets() []Tweet {
 		link := e.ChildAttr("a.tweet-link", "href")
 		link = strings.TrimSuffix(link, "#m")
 		if !app.existsLink(link) {
-			LinkSet[link] = struct{}{}
+			// LinkSet[link] = struct{}{}
+			err := app.addLink(link)
+			if err != nil {
+				app.logger.Error(err.Error())
+			}
 			text := e.ChildText(".tweet-content")
 			text = strings.ReplaceAll(text, "nitter.net", "twitter.com")
 			text = strings.ReplaceAll(text, "piped.video", "youtu.be")
