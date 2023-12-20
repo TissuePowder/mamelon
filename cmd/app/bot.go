@@ -34,10 +34,10 @@ func (app *application) runBot() error {
 						redirectLink := fmt.Sprintf("https://%s%s", app.config.Scrape.Redirect, tweet.Link)
 						discord.ChannelMessageSend(c, redirectLink)
 						discord.ChannelMessageSend(c, tweet.Text)
-						err := app.addLink(tweet.Link)
-						if err != nil {
-							app.logger.Error(err.Error())
-						}
+						// err := app.addLink(tweet.Link)
+						// if err != nil {
+						// 	app.logger.Error(err.Error())
+						// }
 						time.Sleep(1 * time.Second)
 					}
 
