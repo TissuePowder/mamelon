@@ -93,6 +93,8 @@ func (app *application) messageHandler(discord *discordgo.Session, message *disc
 	}
 
 	tweetLinks := app.getTweetLinksFromMessage(message.Content)
-	fmt.Println(tweetLinks)
-	
+	if len(tweetLinks) > 0 {
+		fmt.Println(tweetLinks)
+	}
+		
 }
