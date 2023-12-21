@@ -30,13 +30,7 @@ func (app *application) getTweets() []Tweet {
 			if err != nil {
 				app.logger.Error(err.Error())
 			}
-			translated, err := app.translate(text)
-			if err != nil {
-				app.logger.Error(err.Error())
-				translated = "`Some error occured during DeepL translation`"
-			} else {
-				translated = fmt.Sprintf("```\nTranslation (DeepL):\n------------------------\n%s\n```", translated)
-			}
+			translated := app.getTranslation(text)
 			tweets = append(tweets, Tweet{
 				Link: link,
 				Text: translated,

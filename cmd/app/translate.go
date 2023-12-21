@@ -1,54 +1,10 @@
 package main
 
-import (
-	"bytes"
-	"encoding/json"
-	"net/http"
-)
-
-type TranslationResponse struct {
-	Translations []struct {
-		DetectedSourceLanguage string `json:"detected_source_language"`
-		Text                   string `json:"text"`
-	} `json:"translations"`
-}
-
-func (app *application) translate(text string) (string, error) {
-
-	url := app.config.Translate.DeepL.Url
-	key := app.config.Translate.DeepL.Key
-
-	requestData := map[string]interface{}{
-		"text":        []string{text},
-		"target_lang": "EN",
-	}
-
-	jsonData, err := json.Marshal(requestData)
+func (app *application) getTranslation(text string) string {
+	translated, err := app.translator.Translate(text)
 	if err != nil {
-		return "", err
+		app.logger.Error(err.Error())
+		translated = "`Some error occured during translation`"
 	}
-
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-	if err != nil {
-		return "", err
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "DeepL-Auth-Key "+key)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	var tr TranslationResponse
-
-	err = json.NewDecoder(resp.Body).Decode(&tr)
-	if err != nil {
-		return "", err
-	}
-
-	return tr.Translations[0].Text, nil
+	return translated
 }
