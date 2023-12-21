@@ -19,8 +19,7 @@ func (app *application) getTweets() []Tweet {
 		urls = append(urls, url)
 	}
 
-	m := make(map[string]string)
-	m = app.scraper.ScrapePages(urls)
+	m := app.scraper.ScrapePages(urls)
 
 	tweets := []Tweet{}
 

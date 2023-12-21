@@ -10,8 +10,9 @@ import (
 )
 
 type Scraper struct {
-	c  *colly.Collector
-	mu sync.Mutex
+	c      *colly.Collector
+	logger *logger.Logger
+	mu     sync.Mutex
 }
 
 func New() *Scraper {
@@ -28,6 +29,7 @@ func New() *Scraper {
 	}
 
 	c.OnRequest(func(r *colly.Request) {
+		c.AllowURLRevisit = true
 		for key, value := range headers {
 			r.Headers.Set(key, value)
 		}
@@ -38,7 +40,8 @@ func New() *Scraper {
 	})
 
 	return &Scraper{
-		c: c,
+		c:      c,
+		logger: logger,
 	}
 }
 
@@ -59,9 +62,42 @@ func (s *Scraper) ScrapePages(urls []string) map[string]string {
 	})
 
 	for _, url := range urls {
-		s.c.Visit(url)
+		err := s.c.Visit(url)
+		if err != nil {
+			s.logger.Error(err.Error())
+		}
 	}
 
 	return m
+
+}
+
+func (s *Scraper) ScrapeTweets(urls []string) []string {
+
+	texts := []string{}
+
+	s.c.OnHTML(".main-tweet", func(e *colly.HTMLElement) {
+		text := e.ChildText(".tweet-content")
+		qtext := e.ChildText(".quote-text")
+
+		if qtext != "" {
+			text = text + "\n------------\n" + qtext
+		}
+		text = strings.ReplaceAll(text, "nitter.net", "twitter.com")
+		text = strings.ReplaceAll(text, "piped.video", "youtu.be")
+		text = strings.ReplaceAll(text, "teddit.net", "reddit.com")
+		s.mu.Lock()
+		texts = append(texts, text)
+		s.mu.Unlock()
+	})
+
+	for _, url := range urls {
+		err := s.c.Visit(url)
+		if err != nil {
+			s.logger.Error(err.Error())
+		}
+	}
+
+	return texts
 
 }
