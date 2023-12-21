@@ -6,13 +6,15 @@ import (
 
 	"mamelon/internal/logger"
 	"mamelon/internal/models"
+	"mamelon/internal/scraper"
 )
 
 var LinkSet map[string]struct{}
 
 type application struct {
-	config models.Config
-	logger *logger.Logger
+	config  models.Config
+	logger  *logger.Logger
+	scraper *scraper.Scraper
 }
 
 func main() {
@@ -20,6 +22,7 @@ func main() {
 	LinkSet = make(map[string]struct{})
 
 	logger := logger.New()
+	scraper := scraper.New()
 
 	data, err := os.ReadFile("config.json")
 	if err != nil {
@@ -35,6 +38,7 @@ func main() {
 	app := &application{
 		config: cfg,
 		logger: logger,
+		scraper: scraper,
 	}
 
 	err = app.getLinks("tweets.txt")
