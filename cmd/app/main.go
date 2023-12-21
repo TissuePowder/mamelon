@@ -2,41 +2,34 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
-	"log/slog"
 	"os"
-	"runtime/debug"
 
+	"mamelon/internal/logger"
 	"mamelon/internal/models"
 )
 
 var LinkSet map[string]struct{}
+
 type application struct {
 	config models.Config
-	logger *slog.Logger
+	logger *logger.Logger
 }
 
 func main() {
 
 	LinkSet = make(map[string]struct{})
 
-	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
+	logger := logger.New()
 
 	data, err := os.ReadFile("config.json")
 	if err != nil {
-		trace := string(debug.Stack())
 		logger.Error(err.Error())
-		fmt.Println(trace)
-		os.Exit(1)
 	}
 
 	var cfg models.Config
 	err = json.Unmarshal(data, &cfg)
 	if err != nil {
-		trace := string(debug.Stack())
 		logger.Error(err.Error())
-		fmt.Println(trace)
-		os.Exit(1)
 	}
 
 	app := &application{
@@ -47,18 +40,12 @@ func main() {
 	err = app.getLinks("tweets.txt")
 
 	if err != nil {
-		trace := string(debug.Stack())
 		logger.Error(err.Error())
-		fmt.Println(trace)
-		os.Exit(1)
 	}
-	
+
 	err = app.runBot()
 
 	if err != nil {
-		trace := string(debug.Stack())
 		logger.Error(err.Error())
-		fmt.Println(trace)
-		os.Exit(1)
 	}
 }
