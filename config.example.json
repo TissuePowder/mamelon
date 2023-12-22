@@ -17,7 +17,8 @@
     "engine": "deepl",
     "deepl": {
       "url": "",
-      "key": ""
+      "key": "",
+      "glossary": ""
     },
     "gpt": {
       "url": "",

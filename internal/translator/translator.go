@@ -11,8 +11,9 @@ type Translator interface {
 }
 
 type DeepLTranslator struct {
-	apiUrl string
-	apiKey string
+	apiUrl   string
+	apiKey   string
+	glossary string
 }
 
 type GptTranslator struct {
@@ -27,8 +28,9 @@ func New(tcfg models.TranslatorConfig) (Translator, error) {
 
 	case "deepl":
 		return &DeepLTranslator{
-			apiUrl: tcfg.DeepL.Url,
-			apiKey: tcfg.DeepL.Key,
+			apiUrl:   tcfg.DeepL.Url,
+			apiKey:   tcfg.DeepL.Key,
+			glossary: tcfg.DeepL.Glossary,
 		}, nil
 
 	case "gpt":

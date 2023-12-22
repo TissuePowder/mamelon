@@ -18,10 +18,13 @@ func (dt *DeepLTranslator) Translate(text string) (string, error) {
 
 	url := dt.apiUrl
 	key := dt.apiKey
+	glossary := dt.glossary
 
 	requestData := map[string]interface{}{
 		"text":        []string{text},
+		"source_lang": "JA",
 		"target_lang": "EN",
+		"glossary_id": glossary,
 	}
 
 	jsonData, err := json.Marshal(requestData)

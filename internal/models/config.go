@@ -19,8 +19,9 @@ type ScraperConfig struct {
 type TranslatorConfig struct {
 	Engine string `json:"engine"`
 	DeepL  struct {
-		Url string `json:"url"`
-		Key string `json:"key"`
+		Url      string `json:"url"`
+		Key      string `json:"key"`
+		Glossary string `json:"glossary"`
 	} `json:"deepl"`
 	Gpt struct {
 		Url   string `json:"url"`
