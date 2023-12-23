@@ -41,7 +41,7 @@ func New(tcfg models.TranslatorConfig) (Translator, error) {
 		}, nil
 
 	default:
-		return nil, errors.New("Unsupported translator engine")
+		return nil, errors.New("unsupported translator engine")
 
 	}
 
