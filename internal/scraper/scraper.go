@@ -49,7 +49,9 @@ func (s *Scraper) ScrapePages(urls []string) map[string]string {
 
 	m := make(map[string]string)
 
-	s.c.OnHTML(".timeline-item", func(e *colly.HTMLElement) {
+	s.c.OnHTML("#m.main-tweet", func(e *colly.HTMLElement) {})
+
+	s.c.OnHTML(".timeline .timeline-item", func(e *colly.HTMLElement) {
 		link := e.ChildAttr("a.tweet-link", "href")
 		link = strings.TrimSuffix(link, "#m")
 		text := e.ChildText(".tweet-content")
@@ -76,7 +78,9 @@ func (s *Scraper) ScrapeTweets(urls []string) []string {
 
 	texts := []string{}
 
-	s.c.OnHTML(".main-tweet", func(e *colly.HTMLElement) {
+	s.c.OnHTML(".timeline .timeline-item", func(e *colly.HTMLElement) {})
+
+	s.c.OnHTML("#m.main-tweet", func(e *colly.HTMLElement) {
 		text := e.ChildText(".tweet-content")
 		qtext := e.ChildText(".quote-text")
 
