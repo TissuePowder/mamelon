@@ -6,7 +6,7 @@ import (
 )
 
 type Translator interface {
-	Translate(string) (string, error)
+	Translate(string, ...string) (string, error)
 	WrapText(string) string
 }
 

@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"os"
+	"sync"
 
 	"mamelon/internal/logger"
 	"mamelon/internal/models"
@@ -17,6 +18,7 @@ type application struct {
 	logger     *logger.Logger
 	scraper    *scraper.Scraper
 	translator translator.Translator
+	mu         sync.Mutex
 }
 
 func main() {

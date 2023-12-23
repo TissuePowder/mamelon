@@ -14,17 +14,26 @@ type TranslationResponse struct {
 	} `json:"translations"`
 }
 
-func (dt *DeepLTranslator) Translate(text string) (string, error) {
+func (dt *DeepLTranslator) Translate(text string, args ...string) (string, error) {
 
 	url := dt.apiUrl
 	key := dt.apiKey
 	glossary := dt.glossary
 
-	requestData := map[string]interface{}{
-		"text":        []string{text},
-		"source_lang": "JA",
-		"target_lang": "EN",
-		"glossary_id": glossary,
+	var requestData map[string]interface{}
+
+	if len(args) > 0 && args[0] == "JA" {
+		requestData = map[string]interface{}{
+			"text":        []string{text},
+			"source_lang": "JA",
+			"target_lang": "EN",
+			"glossary_id": glossary,
+		}
+	} else {
+		requestData = map[string]interface{}{
+			"text":        []string{text},
+			"target_lang": "EN",
+		}
 	}
 
 	jsonData, err := json.Marshal(requestData)
@@ -52,6 +61,10 @@ func (dt *DeepLTranslator) Translate(text string) (string, error) {
 	err = json.NewDecoder(resp.Body).Decode(&tr)
 	if err != nil {
 		return "", err
+	}
+
+	if tr.Translations[0].DetectedSourceLanguage == "EN" {
+		return "", nil
 	}
 
 	return dt.WrapText(tr.Translations[0].Text), nil

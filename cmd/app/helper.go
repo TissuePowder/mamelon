@@ -69,8 +69,16 @@ func (app *application) getTweetLinksFromMessage(text string) []string {
 
 func (app *application) getTweetTextsFromMessage(msg string) []string {
 	tweetLinks := app.getTweetLinksFromMessage(msg)
-
 	texts := app.scraper.ScrapeTweets(tweetLinks)
-	return texts
+	translatedTexts := []string{}
+	for _, text := range texts {
+		tt, err := app.translator.Translate(text)
+		if err != nil {
+			app.logger.Error(err.Error())
+		} else if tt != "" {
+			translatedTexts = append(translatedTexts, tt)
+		}
+	}
+	return translatedTexts
 
 }

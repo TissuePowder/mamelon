@@ -2,7 +2,7 @@ package translator
 
 import "fmt"
 
-func (gt *GptTranslator) Translate(text string) (string, error) {
+func (gt *GptTranslator) Translate(text string, args ...string) (string, error) {
 	return "", nil
 }
 

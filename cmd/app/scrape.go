@@ -19,7 +19,9 @@ func (app *application) getTweets() []Tweet {
 		urls = append(urls, url)
 	}
 
+	app.mu.Lock()
 	m := app.scraper.ScrapePages(urls)
+	app.mu.Unlock()
 
 	tweets := []Tweet{}
 
@@ -29,7 +31,7 @@ func (app *application) getTweets() []Tweet {
 			if err != nil {
 				app.logger.Error(err.Error())
 			}
-			translated := app.getTranslation(text)
+			translated := app.getTranslation(text, "JA")
 			tweets = append(tweets, Tweet{
 				Link: link,
 				Text: translated,

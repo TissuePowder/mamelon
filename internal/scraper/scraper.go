@@ -81,7 +81,7 @@ func (s *Scraper) ScrapeTweets(urls []string) []string {
 		qtext := e.ChildText(".quote-text")
 
 		if qtext != "" {
-			text = text + "\n------------\n" + qtext
+			text = text + "\n\n------- QUOTED TWEET -------\n\n" + qtext
 		}
 		text = strings.ReplaceAll(text, "nitter.net", "twitter.com")
 		text = strings.ReplaceAll(text, "piped.video", "youtu.be")
