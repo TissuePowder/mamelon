@@ -94,12 +94,13 @@ func (app *application) messageHandler(discord *discordgo.Session, message *disc
 
 	tweetTexts := app.getTweetTextsFromMessage(message.Content)
 	for _, tt := range tweetTexts {
-		msg := &discordgo.MessageSend{
-			Content:         tt,
-			AllowedMentions: &discordgo.MessageAllowedMentions{RepliedUser: false},
-			Reference:       message.Reference(),
-		}
-		discord.ChannelMessageSendComplex(message.ChannelID, msg)
+		// msg := &discordgo.MessageSend{
+		// 	Content:         tt,
+		// 	AllowedMentions: &discordgo.MessageAllowedMentions{RepliedUser: false},
+		// 	Reference:       message.Reference(),
+		// }
+		// discord.ChannelMessageSendComplex(message.ChannelID, msg)
+		discord.ChannelMessageSend(message.ChannelID, tt)
 	}
 
 }
