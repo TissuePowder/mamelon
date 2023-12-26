@@ -33,6 +33,10 @@
       "url": "",
       "key": "",
       "system": ""
+    },
+    "python": {
+      "conda": "",
+      "script": ""
     }
   }
 }

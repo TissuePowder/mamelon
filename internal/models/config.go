@@ -40,9 +40,15 @@ type ChatConfig struct {
 	} `json:"openai"`
 }
 
+type PythonConfig struct {
+	Conda  string `json:"conda"`
+	Script string `json:"script"`
+}
+
 type Config struct {
 	Bot       BotConfig
 	Scrape    ScraperConfig
 	Translate TranslatorConfig
 	Chat      ChatConfig
+	Python    PythonConfig
 }

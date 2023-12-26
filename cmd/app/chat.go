@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os/exec"
 	"slices"
 )
 
@@ -94,4 +95,18 @@ func (app *application) getGptResponse(authorID string, prompt string) (string, 
 		return "", err
 	}
 	return cr.Choices[0].Message.Content, nil
+}
+
+func (app *application) getQAResponse(text string) (string, error) {
+
+	condaEnvPath := app.config.Python.Conda
+	pythonScriptPath := app.config.Python.Script
+	
+	cmd := exec.Command(condaEnvPath, pythonScriptPath, text)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", err
+	}
+	return string(output), nil
+
 }

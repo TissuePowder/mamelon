@@ -80,11 +80,12 @@ func (app *application) messageHandler(discord *discordgo.Session, message *disc
 
 	trigger := fmt.Sprintf("<@%s>", discord.State.User.ID)
 
-	if strings.HasPrefix(message.Content, trigger) {
+	if strings.HasPrefix(message.Content, trigger) || strings.HasPrefix(message.Content, app.config.Bot.Trigger) {
 		prompt := strings.TrimPrefix(message.Content, trigger)
 		prompt = strings.TrimSpace(prompt)
 		app.logger.Info(fmt.Sprintf("%s|%s: %s", message.Author.Username, message.Author.ID, prompt))
-		reply, err := app.getGptResponse(message.Author.ID, prompt)
+		// reply, err := app.getGptResponse(message.Author.ID, prompt)
+		reply, err := app.getQAResponse(prompt)
 		if err != nil {
 			app.logger.Error(err.Error())
 			return
