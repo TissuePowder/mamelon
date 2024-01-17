@@ -45,8 +45,15 @@ func (app *application) runBot() error {
 					if err != nil {
 						app.logger.Error(err.Error())
 					}
-					msg := string(bMsg)
-					discord.ChannelMessageSend(c, msg)
+					str := string(bMsg)
+					if strings.Contains(str, "|#|") {
+						parts := strings.Split(str, "|#|")
+						sysch := parts[0]
+						msg := parts[1]
+						discord.ChannelMessageSend(sysch, msg)
+					} else {
+						discord.ChannelMessageSend(c, str)
+					}
 				}
 
 				err = os.Truncate("system.txt", 0)
