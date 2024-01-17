@@ -97,8 +97,12 @@ func (s *Scraper) ScrapeTweets(urls []string) []string {
 
 	for _, url := range urls {
 		err := s.c.Visit(url)
-		if err != nil {
+		i := 0
+		for err != nil && i < 5 {
 			s.logger.Error(err.Error())
+			url = strings.ReplaceAll(url, "nitter.uni-sonia.com", "nitter.net")
+			err = s.c.Visit(url)
+			i++
 		}
 	}
 
