@@ -2,6 +2,7 @@
   "bot": {
     "token": "",
     "channels": [],
+    "ignored": [],
     "trigger": "m!",
     "interval": "1m",
     "mentions": [],

@@ -3,6 +3,7 @@ package models
 type BotConfig struct {
 	Token           string   `json:"token"`
 	Channels        []string `json:"channels"`
+	Ignored         []string `json:"ignored"`
 	Trigger         string   `json:"trigger"`
 	Interval        string   `json:"interval"`
 	Mentions        []string `json:"mentions"`

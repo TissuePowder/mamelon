@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"slices"
 	"strings"
 	"syscall"
 	"time"
@@ -106,15 +107,10 @@ func (app *application) messageHandler(discord *discordgo.Session, message *disc
 		discord.ChannelMessageSend(message.ChannelID, reply)
 	}
 
-	tweetTexts := app.getTweetTextsFromMessage(message.Content)
-	for _, tt := range tweetTexts {
-		// msg := &discordgo.MessageSend{
-		// 	Content:         tt,
-		// 	AllowedMentions: &discordgo.MessageAllowedMentions{RepliedUser: false},
-		// 	Reference:       message.Reference(),
-		// }
-		// discord.ChannelMessageSendComplex(message.ChannelID, msg)
-		discord.ChannelMessageSend(message.ChannelID, tt)
+	if !slices.Contains(app.config.Bot.Ignored, message.ChannelID) {
+		tweetTexts := app.getTweetTextsFromMessage(message.Content)
+		for _, tt := range tweetTexts {
+			discord.ChannelMessageSend(message.ChannelID, tt)
+		}
 	}
-
 }
