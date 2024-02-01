@@ -1,7 +1,9 @@
 package scraper
 
 import (
+	"crypto/tls"
 	"mamelon/internal/logger"
+	"net/http"
 	"strings"
 	"sync"
 	"time"
@@ -27,6 +29,10 @@ func New() *Scraper {
 		"accept-language": "en-US,en;q=0.9",
 		"user-agent":      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
 	}
+
+	c.WithTransport(&http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	})
 
 	c.OnRequest(func(r *colly.Request) {
 		c.AllowURLRevisit = true
