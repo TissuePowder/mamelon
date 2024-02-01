@@ -105,10 +105,12 @@ func (s *Scraper) ScrapeTweets(urls []string) []string {
 		err := s.c.Visit(url)
 		i := 0
 		for err != nil && i < 5 {
-			s.logger.Error(err.Error())
 			url = strings.ReplaceAll(url, "nitter.uni-sonia.com", "nitter.net")
 			err = s.c.Visit(url)
 			i++
+		}
+		if err != nil {
+			s.logger.Error(err.Error())
 		}
 	}
 
