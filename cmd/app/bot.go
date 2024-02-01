@@ -96,6 +96,29 @@ func (app *application) messageHandler(discord *discordgo.Session, message *disc
 		prompt = strings.TrimSpace(prompt)
 		app.logger.Info(fmt.Sprintf("%s|%s: %s", message.Author.Username, message.Author.ID, prompt))
 		// reply, err := app.getGptResponse(message.Author.ID, prompt)
+
+		isPrivilegedUser := false
+		if slices.Contains(app.config.Bot.PrivilegedUsers, message.Author.ID) {
+			isPrivilegedUser = true
+		}
+
+		if isPrivilegedUser && prompt == "sleep" {
+			app.config.Chat.Public = false
+			discord.ChannelMessageSend(message.ChannelID, "*Mamelon falls asleep*")
+			return
+		}
+
+		if isPrivilegedUser && prompt == "wake up" {
+			app.config.Chat.Public = true
+			discord.ChannelMessageSend(message.ChannelID, "Meow!")
+			return
+		}
+
+		if !app.config.Chat.Public {
+			discord.ChannelMessageSend(message.ChannelID, "*Mamelon is sleeping and can't talk right now. Your message will be passed on to the bot maintainers.*")
+			return
+		}
+
 		if len(prompt) == 0 {
 			prompt = "who is mamelon?"
 		}
