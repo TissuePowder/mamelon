@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"slices"
+	"strings"
 )
 
 type Tweet struct {
@@ -26,7 +27,7 @@ func (app *application) getTweets() []Tweet {
 	tweets := []Tweet{}
 
 	for link, text := range m {
-		if !app.existsLink(link) {
+		if !app.existsLink(link) && !strings.HasPrefix(text, "RT @") {
 			err := app.addLink(link)
 			if err != nil {
 				app.logger.Error(err.Error())
