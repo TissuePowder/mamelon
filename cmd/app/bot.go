@@ -98,7 +98,7 @@ func (app *application) messageHandler(discord *discordgo.Session, message *disc
 		// reply, err := app.getGptResponse(message.Author.ID, prompt)
 
 		if prompt == "tldr" {
-			messages, err := discord.ChannelMessages(message.ChannelID, 100, "", "", "")
+			messages, err := discord.ChannelMessages(message.ChannelID, 50, "", "", "")
 			if err != nil {
 				app.logger.Error(err.Error())
 				return
