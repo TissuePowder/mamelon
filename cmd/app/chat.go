@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"os/exec"
-	"slices"
 )
 
 type ChatRequest struct {
@@ -25,31 +24,12 @@ type ChatResponse struct {
 	} `json:"choices"`
 }
 
-func (app *application) getGptResponse(authorID string, prompt string) (string, error) {
-
-	isPrivilegedUser := false
-	if slices.Contains(app.config.Bot.PrivilegedUsers, authorID) {
-		isPrivilegedUser = true
-	}
-
-	if isPrivilegedUser && prompt == "sleep" {
-		app.config.Chat.Public = false
-		return "*Mamelon falls asleep*", nil
-	}
-
-	if isPrivilegedUser && prompt == "wake up" {
-		app.config.Chat.Public = true
-		return "Meow!", nil
-	}
-
-	if !app.config.Chat.Public {
-		return "*Mamelon is sleeping and can't talk right now. Your message will be passed on to the bot maintainers.*", nil
-	}
+func (app *application) getGptTLDR(prompt string) (string, error) {
 
 	model := app.config.Chat.OpenAI.Model
 	url := app.config.Chat.OpenAI.Url
 	key := app.config.Chat.OpenAI.Key
-	system := app.config.Chat.OpenAI.System
+	// system := app.config.Chat.OpenAI.System
 
 	requestPayload := ChatRequest{
 		Model: model,
@@ -59,7 +39,7 @@ func (app *application) getGptResponse(authorID string, prompt string) (string, 
 		}{
 			{
 				Role:    "system",
-				Content: system,
+				Content: "The prompt contains bunch of messages from a discord channel. Summarize it and give a short TLDR of what have been discussed in the channel.",
 			},
 			{
 				Role:    "user",
@@ -101,7 +81,7 @@ func (app *application) getQAResponse(text string) (string, error) {
 
 	condaEnvPath := app.config.Python.Conda
 	pythonScriptPath := app.config.Python.Script
-	
+
 	cmd := exec.Command(condaEnvPath, pythonScriptPath, text)
 	output, err := cmd.CombinedOutput()
 	if err != nil {

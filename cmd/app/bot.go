@@ -97,6 +97,30 @@ func (app *application) messageHandler(discord *discordgo.Session, message *disc
 		app.logger.Info(fmt.Sprintf("%s|%s: %s", message.Author.Username, message.Author.ID, prompt))
 		// reply, err := app.getGptResponse(message.Author.ID, prompt)
 
+		if prompt == "tldr" {
+			messages, err := discord.ChannelMessages(message.ChannelID, 100, "", "", "")
+			if err != nil {
+				app.logger.Error(err.Error())
+				return
+			}
+			msgarray := []string{}
+
+			for _, message := range messages {
+				if message.Author.ID != discord.State.User.ID {
+					msgarray = append(msgarray, message.Content)
+				}
+			}
+			promptMsg := strings.Join(msgarray, "\n")
+			reply, err := app.getGptTLDR(promptMsg)
+
+			if err != nil {
+				app.logger.Error(err.Error())
+				return
+			}
+			discord.ChannelMessageSend(message.ChannelID, reply)
+			return
+		}
+
 		isPrivilegedUser := false
 		if slices.Contains(app.config.Bot.PrivilegedUsers, message.Author.ID) {
 			isPrivilegedUser = true
@@ -114,7 +138,7 @@ func (app *application) messageHandler(discord *discordgo.Session, message *disc
 			return
 		}
 
-		if !app.config.Chat.Public {
+		if !app.config.Chat.Public && !isPrivilegedUser {
 			discord.ChannelMessageSend(message.ChannelID, "*Mamelon is sleeping and can't talk right now. Your message will be passed on to the bot maintainers.*")
 			return
 		}
