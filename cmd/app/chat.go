@@ -39,7 +39,7 @@ func (app *application) getGptTLDR(prompt string) (string, error) {
 		}{
 			{
 				Role:    "system",
-				Content: "The prompt contains bunch of messages from a discord channel. Summarize it and give a short TLDR of what have been discussed in the channel.",
+				Content: "The prompt contains bunch of messages from a discord server centered to the manga/anime 'boku no kokoro no yabai yatsu'. Summarize it and give a short but precise TLDR of what have been discussed in the channel.",
 			},
 			{
 				Role:    "user",
